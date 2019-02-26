@@ -67,7 +67,28 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/users')
+router.get('/', async (req, res) => {
+    try {
+        const users = await db.readAll();
+
+        users.length > 0 ?
+            res
+                .status(200)
+                .json(users)
+            :
+            res
+                .status(404)
+                .json({
+                    error: 'No users found'
+                });
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                internalErrorMessage
+            });
+    }
+})
 
 router.use('/', (req, res) => res.send('Welcome to the User API'));
 

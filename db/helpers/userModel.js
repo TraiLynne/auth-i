@@ -26,9 +26,14 @@ function findById(id) {
         })
         .first();
 }
+
+function readAll() {
+    return db(dbName).select('id', 'name', 'username', 'createdAt');
+}
 module.exports = {
     add,
     find,
     findBy,
     findById,
+    readAll
 };
