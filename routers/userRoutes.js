@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../db/helpers/userModel');
+const internalErrorMessage = 'Houston, we have a problem'
 
 const router = express.Router();
 
@@ -37,12 +38,34 @@ router.post('/register', async (req, res) => {
         res
             .status(500)
             .json({
-                errorMessage: 'Houston, we have a problem'
+                internalErrorMessage
             })
     }
 })
 
-router.post('/login')
+router.post('/login', async (req, res) => {
+    let { username, password } = req.body;
+
+    try {
+        let user = db.findBy({username});
+
+        if (user && bcrypt.compareSync(password, user.password)){
+            res
+                .status(201)
+                .send('Logged In')
+        } else {
+            res
+                .status(201)
+                .json('Invalid Credentials')
+        }
+    } catch (err) {
+        res
+            .status(500)
+            .json({
+                internalErrorMessage
+            })
+    }
+})
 
 router.get('/users')
 
